@@ -1,0 +1,8 @@
+config to execute a command in each terminal
+      [[[terminal3]]]
+        order = 0
+        parent = child2
+        profile = default
+        type = Terminal
+        uuid = 6ae456ad-10ba-4896-bd9a-77253d8c5bf0
+        command = (cd ~/Documents/; bash)
