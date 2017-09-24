@@ -1,0 +1,35 @@
+t : w
+children:
+- t : n
+  labels : '' #=> generate by using titles in its top level children
+  active_page : 0
+  children:
+    - t : v
+      title : 'android'
+      ratio : 0.5
+      children:
+        - t : t
+          command : 'cd ~/Installed/android-studio/; bash'
+        - t : t
+          command : 'cd ~/AndroidStudioProjects/SmartSmsAlpha/; bash'
+    - t : h
+      title : 'random'
+      ratio : 0.5
+      children:
+        - t : t
+          command : 'cd ~/Documents/SMS/sms-app/notebooks; bash'
+        - t : t
+          command : 'cd ~/Downloads/; bash'
+    - t : h
+      title : 'backend'
+      ratio : 0.5
+      children:
+        - t : v
+          ratio : 0.5
+          children:
+            - t : t
+              command : 'cd ~/Documents/SMS/live; bash'
+            - t : t
+              command : 'cd ~/Documents/SMS/sms-app; bash'
+        - t : t
+          command : 'cd ~/Documents/FRODO/frodo-backend; bash'

@@ -56,3 +56,47 @@
     - 'next' : next lines : after content part
 
   So we can easily create a new config file out of previous one
+
+
+- our types short names:
+  w : window
+    title : title of the window
+  n : notebook
+    labels : title of the tabs in order
+  v : vertical split
+    ratio
+    title : contribute to notebook's label (if topmost child of notebook)
+  h : horizontal split
+    ratio
+    title : contribute to notebook's label (if topmost child of notebook)
+  t : terminal
+    command
+    title : contribute to notebook's label (if topmost child of notebook)
+
+- how to specify structure ??? yaml file
+  t : w
+  children:
+    - t : n
+      labels : '' #=> generate by using titles in its top level children
+      children:
+        - t : v
+          title : 'android'
+          ratio : 0.5
+          children:
+            - t : t
+              command : 'cd ~/Downloads; bash'
+            - t : t
+              command : 'cd ~/Documents/SMS; bash'
+        - t : t
+          title : 'random'
+          command : 'cd ~/repos/; bash'
+        - t : h
+          title : 'backend'
+          ratio : 0.5
+          children:
+            - t : v
+              ratio : 0.5
+              children:
+                - t : t
+                - t : t
+            - t : t

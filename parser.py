@@ -2,6 +2,8 @@ import sys
 import os
 import argparse
 import random
+import json
+import yaml
 
 def exit():
     sys.exit(0)
@@ -178,5 +180,89 @@ def try_2(target_layout_name):
         if layout['name'] == target_layout_name:
             print_structure(window_child_id, nested_map)
 
+idee = -1
+def get_next_id():
+    global idee
+    idee = idee + 1
+    return str(idee)
 
-try_2('sep24')
+def gen_name_line(indent, name):
+    return '{}[[[{}]]]'.format(' '*indent, name)
+
+def gen_property_line(indent, key, value):
+    return '{}{} = {}'.format(' '*indent, key, value)
+
+def generate_node(parent, order, node, indent):
+    out_lines = []
+    if node['t'] == 'w':
+        name = 'window' + get_next_id()
+        out_lines.append(gen_name_line(indent, name))
+        out_lines.append(gen_property_line(indent + 2, 'parent', '""'))
+        out_lines.append(gen_property_line(indent + 2, 'order', order))
+        out_lines.append(gen_property_line(indent + 2, 'type', 'Window'))
+
+        out_lines.append(gen_property_line(indent + 2, 'title', 'My Terminator Window'))
+        children = node['children']
+        out_lines += generate_node(name, '0', children[0], indent)
+
+    elif node['t'] == 'n':
+        name = 'notebook' + get_next_id()
+        out_lines.append(gen_name_line(indent, name))
+        out_lines.append(gen_property_line(indent + 2, 'parent', parent))
+        out_lines.append(gen_property_line(indent + 2, 'order', order))
+        out_lines.append(gen_property_line(indent + 2, 'type', 'Notebook'))
+
+        active_page = node.get('active_page', 0)
+        out_lines.append(gen_property_line(indent + 2, 'active_page', '{}'.format(active_page)))
+        
+        children = node.get('children', [])
+        labels = []
+        for i in range(0, len(children)):
+            child = children[i]
+            label = child.get('title', None) or 'Tab:{}'.format(i)
+            labels.append(label)
+        out_lines.append(gen_property_line(indent + 2, 'labels', ','.join(labels)))
+
+        for i in range(0, len(children)):
+            child = children[i]
+            out_lines += generate_node(name, '{}'.format(i), child, indent)
+
+    elif node['t'] == 'h' or node['t'] == 'v':
+        prefix = 'horizontal' if node['t'] == 'h' else 'vertical'
+        type = 'HPaned' if node['t'] == 'v' else 'VPaned'
+        #HPaned splits vertical line; VPaned splits horizontal line
+        name =  prefix + get_next_id()
+        out_lines.append(gen_name_line(indent, name))
+        out_lines.append(gen_property_line(indent + 2, 'parent', parent))
+        out_lines.append(gen_property_line(indent + 2, 'order', order))
+        out_lines.append(gen_property_line(indent + 2, 'type', type))
+        ratio = node.get('ratio', '0.5')
+        out_lines.append(gen_property_line(indent + 2, 'ratio', ratio))
+
+        children = node.get('children', [])
+        for i in range(0, len(children)):
+            child = children[i]
+            out_lines += generate_node(name, '{}'.format(i), child, indent)
+    elif node['t'] == 't':
+        name = 'terminal' + get_next_id()
+        out_lines.append(gen_name_line(indent, name))
+        out_lines.append(gen_property_line(indent + 2, 'parent', parent))
+        out_lines.append(gen_property_line(indent + 2, 'order', order))
+        out_lines.append(gen_property_line(indent + 2, 'type', 'Terminal'))
+        
+        command = node.get('command', None)
+        if command:
+            out_lines.append(gen_property_line(indent + 2, 'command', command))
+
+    return out_lines
+
+#try_2('sep24')
+
+def try_3():
+    layout = yaml.load(open(input_file))
+    #print(layout)
+    lines = generate_node('', '0', layout, 4)
+    for l in lines:
+        print(l, end='\n')
+
+try_3()
