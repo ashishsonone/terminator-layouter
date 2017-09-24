@@ -1,4 +1,4 @@
-config to execute a command in each terminal
+- config to execute a command in each terminal
       [[[terminal3]]]
         order = 0
         parent = child2
@@ -6,3 +6,53 @@ config to execute a command in each terminal
         type = Terminal
         uuid = 6ae456ad-10ba-4896-bd9a-77253d8c5bf0
         command = (cd ~/Documents/; bash)
+
+- the id used for the node need not be sequential can be any alphanumeric string
+  [[[terminal3]]]
+  [[[cool_thing_22]]]
+
+- number of '[' probably represents nesting of node withing the config file
+[layouts]
+  [[default]]
+    [[[child112]]]
+      fullscreen = False
+      last_active_window = True
+      maximised = True
+
+- sample parsed layout heirarchy
+0 [Window] : child0
+    0 [Notebook] : child1
+        0 [VPaned] : child2
+            0 [Terminal] : terminal3
+            1 [Terminal] : terminal4
+        1 [VPaned] : child5
+            0 [Terminal] : terminal6
+            1 [Terminal] : terminal7
+        2 [HPaned] : child8
+            0 [VPaned] : child9
+                0 [Terminal] : terminal10
+                1 [Terminal] : terminal11
+            1 [Terminal] : terminal12
+
+- 5 types of nodes in layout:
+  Window : root occurs only once (can have 1 children)
+  Notebook : inside window but occurs only once (can have N children aka tabs which can be [VPaned, HPaned, Terminal])
+  VPaned : vertical split (2 children)
+  HPaned : horizontal split (2 children)
+  Terminal : actual terminal (0 children)
+
+- Each node has atleast [type, parent, order] attributes apart from its id as in [[[child8]]]
+  type : one of the 5 types as specified above
+  parent : id of the parent
+  order : position among the children of its parent
+
+- We want to make a utility to plug in a layout format, 
+  So must have a way to cherry pick a part of config file and replace it
+  So to pick layout 'default' content and replace it, we should have:
+    - 'prev' : prev lines : before '    [[default]]'
+    - 'name' : default
+    - 'cherry' : cherry line : i.e '    [[default]]'
+    - 'lines' : content lines : replace it with our new structure content
+    - 'next' : next lines : after content part
+
+  So we can easily create a new config file out of previous one

@@ -1,6 +1,7 @@
 import sys 
 import os
 import argparse
+import random
 
 def exit():
     sys.exit(0)
@@ -13,8 +14,8 @@ def print_usage():
     exit()
 
 parser = argparse.ArgumentParser()
-parser.add_argument('--input-file', default=None)
-parser.add_argument('--assist', action="store_true")
+parser.add_argument('--input-file', '-i', default=None)
+parser.add_argument('--assist', '-a', action="store_true")
 
 args = parser.parse_args()
 args = vars(args)
@@ -55,7 +56,7 @@ def parse_layout_children(lines):
             #print('old child = {}'.format(current))
             current = {}
             current['id'] = _id
-            print('new child = {}'.format(current))
+            #print('new child = {}'.format(current))
             children.append(current)
         else:
             #extract and store property in current child
@@ -108,4 +109,74 @@ def process(input_file):
     nested_map, window_child_id = nest(children)
     print_structure(window_child_id, nested_map)
 
-process(input_file)
+#depth : 1 : [layouts], 2 : [[default]], 3 : [[[child1]]]
+#target : '*' or 'default' or 'tab1' or ...
+def gen_cherry_regex(name, depth):
+    if name == '*':
+        name = '[\w ]+'
+    name = '({})'.format(name)
+    regex = '^{}{}{}'.format('\['*depth, name, '\]'*depth)
+    return regex
+
+#stripped line
+def get_depth(line):
+    if line[:1] == '[':
+        line = find(line, '^(\\[*)')
+        if line:
+            return len(line)
+    return -1
+
+#assume that only lines with depth >= given depth are present
+def read_targets(lines, depth):
+    targets = [] #target : {name='layouts', lines=[<line>]}
+
+    current_target = None
+
+    cherry_regex = gen_cherry_regex('*', depth)
+
+    for line in lines:
+        s_line = line.strip()
+        if not s_line:
+            continue #discard empty lines
+
+        name = find(s_line, cherry_regex)
+        if name:
+            #new target
+            current_target = {'name' : name, 'lines' : [], 'cherry' : line}
+            print('new target : {}'.format(name))
+            targets.append(current_target)
+        else:
+            #add to current target
+            current_target['lines'].append(line)
+    return targets
+
+#process(input_file)
+
+def try_1():
+    targets = read_targets(open(input_file).readlines(), 3)
+    cherry = random.sample(targets, 1)[0]
+    print(cherry)
+    cherry['lines'].append('  hello = world -----------------------------------\n')
+
+    for t in targets:
+        print(t['cherry'], end='')
+        for c in t['lines']:
+            print(c, end='')
+
+def try_2(target_layout_name):
+    #full config file
+    print('\nfind level 1 targets')
+    targets = read_targets(open(input_file).readlines(), 1)
+    cherry = [target for target in targets if target['name'] == 'layouts'][0]
+    print('\nfind level 2 targets')
+    layouts = read_targets(cherry['lines'], 2)
+    print('\nfinding actual layouts')
+    for layout in layouts:
+        print('parsing layout : {}'.format(layout['name']))
+        children = parse_layout_children(layout['lines'])
+        nested_map, window_child_id = nest(children)
+        if layout['name'] == target_layout_name:
+            print_structure(window_child_id, nested_map)
+
+
+try_2('sep24')
