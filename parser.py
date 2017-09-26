@@ -201,7 +201,9 @@ def generate_node(parent, order, node, indent):
         out_lines.append(gen_property_line(indent + 2, 'order', order))
         out_lines.append(gen_property_line(indent + 2, 'type', 'Window'))
 
-        out_lines.append(gen_property_line(indent + 2, 'title', 'My Terminator Window'))
+        out_lines.append(gen_property_line(indent + 2, 'title', node['title']))
+        out_lines.append(gen_property_line(indent + 2, 'maximised', node['maximised']))
+        out_lines.append(gen_property_line(indent + 2, 'fullscreen', node['fullscreen']))
         children = node['children']
         out_lines += generate_node(name, '0', children[0], indent)
 
@@ -260,8 +262,20 @@ def generate_node(parent, order, node, indent):
 
 def try_3():
     layout = yaml.load(open(input_file))
-    #print(layout)
-    lines = generate_node('', '0', layout, 4)
+    window_layout = {}
+    window_layout['t'] = 'w'
+    window_layout['title'] = layout.get('window_title', '')
+    window_layout['maximised'] = layout.get('window_maximised', 'True')
+    window_layout['fullscreen'] = layout.get('window_fullscreen', 'False')
+
+    notebook_layout = {}
+    notebook_layout['t'] = 'n'
+    notebook_layout['active_page'] = layout.get('tab_active', '0')
+
+    window_layout['children'] = [notebook_layout]
+    notebook_layout['children'] = layout['tabs']
+    print(layout)
+    lines = generate_node('', '0', window_layout, 4)
     for l in lines:
         print(l, end='\n')
 
