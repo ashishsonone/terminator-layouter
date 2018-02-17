@@ -1,0 +1,34 @@
+window_title : Kyte is Back
+#window_maximised : True
+#window_fullscreen : False
+tab_active_page : 1
+tabs:
+  - t : h
+    title : 'android'
+    ratio : 0.5
+    children:
+      - t : t
+        command : 'cd ~/Installed/android-studio/; pwd; bash'
+      - t : t
+        command : 'cd ~/AndroidStudioProjects/SmartSmsAlpha/; pwd; bash'
+  - t : h
+    title : 'react'
+    ratio : 0.5
+    children:
+      - t : t
+        command : 'cd ~/Documents/KYTESMS/React/label-me; pwd; bash'
+      - t : t
+        command : 'cd ~/Documents/KYTESMS/React/label-me-api; pwd; bash'
+  - t : h
+    title : 'analysis'
+    ratio : 0.5
+    children:
+      - t : v
+        ratio : 0.5
+        children:
+          - t : t
+            command : 'cd ~/Documents/KYTESMS/sms_prep/; pwd; bash'
+          - t : t
+            command : 'cd ~/Documents/KYTESMS/sms_prep; pwd; bash'
+      - t : t
+        command : 'cd ~/ssd/Downloads/; pwd; bash'
