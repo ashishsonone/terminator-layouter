@@ -8,17 +8,17 @@ tabs:
     ratio : 0.5
     children:
       - t : t
-        command : 'cd ~/Installed/android-studio/; pwd; bash'
+        dir : '~/Installed/android-studio/'
       - t : t
-        command : 'cd ~/AndroidStudioProjects/SmartSmsAlpha/; pwd; bash'
+        dir : '~/AndroidStudioProjects/SmartSmsAlpha/'
   - t : h
     title : 'react'
     ratio : 0.5
     children:
       - t : t
-        command : 'cd ~/Documents/KYTESMS/React/label-me; pwd; bash'
+        dir : '~/Documents/KYTESMS/React/label-me'
       - t : t
-        command : 'cd ~/Documents/KYTESMS/React/label-me-api; pwd; bash'
+        dir : '~/Documents/KYTESMS/React/label-me-api'
   - t : h
     title : 'analysis'
     ratio : 0.5
@@ -27,8 +27,8 @@ tabs:
         ratio : 0.5
         children:
           - t : t
-            command : 'cd ~/Documents/KYTESMS/sms_prep/; pwd; bash'
+            dir : '~/Documents/KYTESMS/sms_prep/'
           - t : t
-            command : 'cd ~/Documents/KYTESMS/sms_prep; pwd; bash'
+            dir : '~/Documents/KYTESMS/sms_prep'
       - t : t
-        command : 'cd ~/ssd/Downloads/; pwd; bash'
+        dir : '~/ssd/Downloads/'

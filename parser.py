@@ -246,6 +246,7 @@ def generate_node(parent, order, node, indent):
             child = children[i]
             out_lines += generate_node(name, '{}'.format(i), child, indent)
     elif node['t'] == 't':
+        #print(node)
         name = 'terminal' + get_next_id()
         out_lines.append(gen_name_line(indent, name))
         out_lines.append(gen_property_line(indent + 2, 'parent', parent))
@@ -256,6 +257,12 @@ def generate_node(parent, order, node, indent):
         if command:
             out_lines.append(gen_property_line(indent + 2, 'command', command))
 
+        #new on 17 feb 18 => no need to use a 'command' to change the working directory
+        directory = node.get('dir', None)
+        if directory:
+            out_lines.append(gen_property_line(indent + 2, 'directory', directory))
+
+    #print(out_lines)
     return out_lines
 
 #try_2('sep24')
@@ -276,6 +283,7 @@ def try_3():
     notebook_layout['children'] = layout['tabs']
     print(layout)
     lines = generate_node('', '0', window_layout, 4)
+    print('\n---------------------\n\n')
     for l in lines:
         print(l, end='\n')
 
